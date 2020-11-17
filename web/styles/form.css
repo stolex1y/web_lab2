@@ -1,0 +1,81 @@
+main form {
+    min-height: 100%;
+    min-width: 50%;
+}
+
+button {
+    border-style: solid;
+    background-color: white;
+    border-radius: 4px;
+    margin-right: 2px;
+    border-width: 1px;
+    border-color: rgb(118, 118, 118);
+}
+
+#display-R {
+    padding: 2px 10px;
+    border: 1px solid grey;
+}
+
+button:focus {
+    border-radius: 1px;
+    border-width: 2px;
+}
+
+.choose:hover, .choose:focus {
+    border-color: #4682B4;
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 1px;
+    outline: none;
+}
+
+
+.pushed, .pushed:hover, .pushed:focus {
+    background-color: #87CEFA;
+    border-color: #4682B4;
+    border-width: 1px;
+    box-shadow: none;
+    border-radius: 5px;
+
+}
+
+
+.choose:focus {
+    border-width: 3px;
+}
+
+.error {
+    color: red;
+}
+
+span.error {
+    min-height: 100px;
+    min-width: 10%;
+}
+
+.choose {
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 1px;
+    font-size: 16px;
+}
+
+.choose {
+    cursor: pointer;
+}
+
+input.choose[type="text"] {
+    cursor: text;
+}
+
+button[type=submit] {
+    background-color: #4682B4;
+    color: white;
+    padding: 5px 10px;
+    font-weight: bold;
+}
+
+button[type=submit]:disabled {
+    background-color: grey;
+}
