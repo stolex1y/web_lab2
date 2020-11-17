@@ -16,43 +16,44 @@ public class ServletChecker extends HttpServlet {
     private boolean check(Point point) {
         double X = point.getX();
         double Y = point.getY();
-        int R = point.getR();
+        double R = point.getR();
 
-        if (X > 0) {
-            if (Y > 0) {
-                return false;
+        if (X >= 0) {
+            if (Y >= 0) {
+                return (Y <= (-0.5 * X + R/2));
             } else {
-                return ((Y >= (- (double) R) / 2) && (X <= R));
+                double v = (R * R) / 4 - X * X;
+                // Проверка ОДЗ
+                if (v < 0)
+                    return false;
+                else
+                    return Y >= -Math.sqrt(v);
             }
         } else {
             if (Y > 0) {
-                return Y <= (X + ((double) R) / 2);
+                return ((Y <= R / 2) && (X >= -R));
             } else {
-                // Проверка ОДЗ
-                if ((((double) R * R) / 4 - X * X) < 0)
-                    return false;
-                return Y >= -Math.sqrt(((double) R * R) / 4 - X * X);
+                return false;
             }
         }
     }
     
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Через сессию
-        HttpSession session = request.getSession();
+        /*HttpSession session = request.getSession();
         Param param = (Param) session.getAttribute("param");
-        long start = (long) session.getAttribute("start");
+        long start = (long) session.getAttribute("start");*/
 
         // Через контекст
-        /*ServletContext context = request.getServletContext();
+        ServletContext context = request.getServletContext();
         Param[] results = (Param[]) context.getAttribute("results");
         int count = ((int) context.getAttribute("count")) - 1;
         String sID = Support.getCookie(request.getCookies(), "resultID", String.valueOf(count));
         int id = Integer.parseInt(sID);
         Param param = results[id];
-        Long start = ((Long[]) context.getAttribute("execute"))[id];*/
+        Long start = ((Long[]) context.getAttribute("execute"))[id];
 
         Point last = param.last();
-
         last.setHit(check(param.last()));
 
         long end = System.currentTimeMillis();
@@ -62,10 +63,10 @@ public class ServletChecker extends HttpServlet {
         last.setNow(now);
 
         // Через сессию
-        session.setAttribute("param", param);
+//        session.setAttribute("param", param);
         // Через контекст
-        /*results[id] = param;
-        context.setAttribute("results", results);*/
+        results[id] = param;
+        context.setAttribute("results", results);
 
         String isAjax = request.getHeader("X-Requested-With");
         if (isAjax != null && isAjax.equals("XMLHttpRequest")) {
@@ -77,8 +78,8 @@ public class ServletChecker extends HttpServlet {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect("");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        doGet(request, response);
     }
 
 }

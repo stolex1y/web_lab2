@@ -32,30 +32,40 @@ document.getElementById("input-Y").oninput = function() {
     return true;
 }
 
-// Для переключения кнопок с параметром R
-function onclickButton() {
-    let elements = document.getElementsByName("button-R");
+// Для переключения кнопок c именем buttonsName и элементом hiddenId
+function onclickButton(event, buttonsName, hiddenId) {
+    let elements = document.getElementsByName(buttonsName);
     for (let i = 0; i < elements.length; i++) {
         if (elements[i].classList.contains("pushed"))
             elements[i].classList.remove("pushed");
     }
 
-    (this.classList.contains("pushed"))
-        ? this.classList.remove("pushed")
-        : this.classList.add("pushed");
-    let R = document.getElementById("input-R");
-    R.value = this.innerHTML;
+    let current = event.currentTarget;
+    (current.classList.contains("pushed"))
+        ? current.classList.remove("pushed")
+        : current.classList.add("pushed");
+    let hidden = document.getElementById(hiddenId);
+    hidden.value = current.innerHTML.replace(",", ".");
 }
-let elements = document.getElementsByName("button-R");
+let buttonsR = document.getElementsByName("button-R");
 // Для каждой кнопки button-R, добавление слушателя на нажатие
-for (let i = 0; i < elements.length; i++) {
-    elements[i].addEventListener("click", onclickButton, false);
+for (let i = 0; i < buttonsR.length; i++) {
+    buttonsR[i].addEventListener("click", function (event) {
+        onclickButton(event, "button-R", "input-R");
+    }, false);
+}
+
+let buttonsX = document.getElementsByName("button-X");
+// Для каждой кнопки button-X, добавление слушателя на нажатие
+for (let i = 0; i < buttonsX.length; i++) {
+    buttonsX[i].addEventListener("click", function (event) {
+        onclickButton(event, "button-X", "input-X");
+    }, false);
 }
 
 // Используется как функция обратного вызова в методе postRequest (ajax.js).
 // Отвечает за обновление информации в таблице и на графике
 function ajaxCallback(type, text) {
-    console.log(type + " " + text);
     if (type.match(/^application\/json/)) {
         let table = document.querySelector("section#results table");
         if (table.classList.contains("hidden")) {
@@ -72,6 +82,7 @@ function addRowInTable(table, param) {
     let arr = JSON.parse(param);
     table.innerHTML = "";
     let innerHTML = "";
+    // Массив в таблице получается перевернутый, а новая строка появляется сверху
     for (let i = arr.length - 1, row = arr[i]; i >= 0; row = arr[--i]) {
         innerHTML += "<tr>";
         for (let cell in row) {

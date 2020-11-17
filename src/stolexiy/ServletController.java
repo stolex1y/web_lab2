@@ -13,14 +13,14 @@ import java.util.Objects;
 @WebServlet(name = "Controller")
 public class ServletController extends HttpServlet {
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Param param;
         // Через сессию
-        HttpSession session = request.getSession(true);
-        param = (Param) session.getAttribute("param");
+        /*HttpSession session = request.getSession(true);
+        param = (Param) session.getAttribute("param");*/
 
         // Через контекст
-        /*ServletContext context = request.getServletContext();
+        ServletContext context = request.getServletContext();
         Param[] results = (Param[]) context.getAttribute("results");
         int id;
         try {
@@ -35,7 +35,7 @@ public class ServletController extends HttpServlet {
             response.addCookie(resultID);
         } catch (NumberFormatException e) {
             throw new ServletException("Ошибочные данные в cookie.");
-        }*/
+        }
 
         long start = System.currentTimeMillis();
         Point point = new Point();
@@ -55,10 +55,10 @@ public class ServletController extends HttpServlet {
         }
         param.add(point);
         // Через сессию
-        session.setAttribute("start", start);
+//        session.setAttribute("start", start);
 
         // Через контекст
-        /*if (Objects.isNull(context.getAttribute("execute"))) {
+        if (Objects.isNull(context.getAttribute("execute"))) {
             context.setAttribute("execute", new Long[results.length]);
         }
         // Данный массив нужен для сохранения данных о начале работы скрипта проверки точки
@@ -67,14 +67,14 @@ public class ServletController extends HttpServlet {
             execute = Arrays.copyOf(execute, id + 10);
         }
         execute[id] = start;
-        context.setAttribute("execute", execute);*/
+        context.setAttribute("execute", execute);
 
         // После проверки и сохранения всех данных перенаправляемся на Checker
         request.getServletContext().getNamedDispatcher("Checker").forward(request, response);
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect("");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        doGet(request, response);
     }
 }

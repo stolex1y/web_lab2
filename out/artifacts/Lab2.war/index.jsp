@@ -2,6 +2,7 @@
 <%@ page import="stolexiy.Point" %>
 <%@ page import="java.util.Arrays" %>
 <%@ page import="stolexiy.Support" %>
+<%@ page import="java.util.List" %>
 <%--
   Created by IntelliJ IDEA.
   User: Alexey
@@ -22,7 +23,7 @@
     }
 %>--%>
 <%--Через контекст--%>
-<%--<%
+<%
     Param param; // Параметры текущего клиента
     ServletContext context = getServletConfig().getServletContext();
     // Проверяем, есть ли счётчик в атрибутах
@@ -50,9 +51,11 @@
     // Не забываем сохранить в контекст новое значение счётчика и параметры
     context.setAttribute("count", ++count);
     context.setAttribute("results", results);
-%>--%>
+%>
 <%--JavaBean--%>
-<jsp:useBean id="param" class="stolexiy.Param" scope="session" />
+<%--<jsp:useBean id="param" class="stolexiy.Param" scope="session" /> --%>
+
+
 <%
     Point last = param.last();
 %>
@@ -74,24 +77,23 @@
 <header class="">
     <span id="name">Филимонов Алексей Александрович</span>
     <span id="group">P3231</span>
-    <span id="var">Вариант: 2724</span>
+    <span id="var">Вариант: 2745</span>
 </header>
 <main>
     <img src="resources/areas.png" width="223" height="219" alt="Выделенные области">
     <canvas id="graphic" width="223" height="219"></canvas>
-    <form method="post" action="controller" name="param">
+    <form method="get" action="controller" name="param">
         <p>
-            <label for="input-X">Координата X:</label>
-            <select name="input-X" id="input-X" class="choose">
-                <%
-                    String selected;
-                    for(int i = -3; i < 6; i++) {
-                        if (i == last.getX()) selected = "selected";
-                        else selected = "";
-                        out.println("<option " + selected + ">" + i + "</option>");
+            <input type="hidden" name="input-X" id="input-X" value="<%= last.getX() %>" class="choose">
+            Координата X:
+            <%
+                String className;
+                for(int i = -3; i < 6; i++) {
+                    if (i == last.getX()) className = "pushed";
+                    else className = "";
+                    out.println("<button class='" + className + " choose' type='button' name='button-X' id='button-" + i + "'>" + i + "</button>");
                 }
-                %>
-            </select>
+            %>
         </p>
         <p>
             <label for="input-Y">Координата Y:</label>
@@ -101,12 +103,11 @@
             <input data-scale="1" type="hidden" name="input-R" id="input-R" value="<%= last.getR() %>" class="choose">
             Параметр R:
             <%
-                String className;
-                for(int i = 1; i < 6; i++) {
+                for(double i = 1; i < 3.5; i += 0.5) {
                     if (i == last.getR()) className = "pushed";
                     else className = "";
-                    out.println("<button class='" + className + " choose' type='button' name='button-R' id='button-" + i + "'>" + i + "</button>");
-            }
+                    out.println("<button class='" + className + " choose' type='button' name='button-R' id='button-" + i + "'>" + String.valueOf(i).replaceAll("\\.", ",") + "</button>");
+                }
             %>
         </p>
         <button class="choose" id="button-submit" type="submit" name="button-submit">Проверить</button>
@@ -128,7 +129,10 @@
     </thead>
     <tbody id="main">
         <%
-            for (Point point : param.getPoints()) {
+            List<Point> points = param.getPoints();
+            Point point;
+            for (int i = points.size() - 1; i >= 0; i--) {
+                point = points.get(i);
                 out.println(point.toTableRow());
             }
         %>

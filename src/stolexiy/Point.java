@@ -8,7 +8,7 @@ import java.time.format.FormatStyle;
 public class Point {
     private double X;
     private double Y;
-    private int R;
+    private double R;
     private boolean hit;
     private long leadTime;
     private ZonedDateTime now;
@@ -56,19 +56,23 @@ public class Point {
         this.hit = hit;
     }
 
-    public int getR() {
+    public double getR() {
         return R;
     }
 
+    /*public String getR_str() {
+        return decimalFormatter.format(R);
+    }*/
+
     public void setR(String strR) throws IllegalArgumentException {
         try {
-            R = Integer.parseInt(strR);
+            R = Double.parseDouble(strR);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Ошибка: в поле 'Параметр R' не число!");
         }
-        if (R < 1 || R > 5) {
-            R = 1;
-            throw new IllegalArgumentException("Ошибка: недопустимое число в поле 'Координата X'!");
+        if (R < 1.0 || R > 3.0) {
+            R = 1.0;
+            throw new IllegalArgumentException("Ошибка: недопустимое число в поле 'Параметр R'!");
         }
     }
 
@@ -127,7 +131,7 @@ public class Point {
                 "<td>" + leadTime + "</td>" +
                 "<td>" + decimalFormatter.format(X) + "</td>" +
                 "<td>" + decimalFormatter.format(Y) + "</td>" +
-                "<td>" + R + "</td>" +
+                "<td>" + decimalFormatter.format(R) + "</td>" +
                 "<td>" + (hit ? "Попадание" : "Промах") + "</td>" +
                 "</tr>";
     }
@@ -142,7 +146,7 @@ public class Point {
                 toNameValue("2leadTime", String.valueOf(leadTime)) + "," +
                 toNameValue("3X", decimalFormatter.format(X)) + "," +
                 toNameValue("4Y", decimalFormatter.format(Y)) + "," +
-                toNameValue("5R", String.valueOf(R)) + "," +
+                toNameValue("5R", decimalFormatter.format(R)) + "," +
                 toNameValue("6hit", (hit ? "Попадание" : "Промах")) +
                 "}";
     }

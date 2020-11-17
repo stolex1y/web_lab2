@@ -36,9 +36,9 @@ let drawPlate = function () {
     c.miterLimit = 0;
     let figureColor = "#39F";
     // Ось X направлена вправо, а Y вниз!
-    drawTriangle(c, -unitR/2, 0, 0, -unitR/2, figureColor);
-    drawRect(c, 0, +unitR/2, unitR, 0, figureColor);
-    drawCircle(c, 0, 0, unitR/2, 3, figureColor);
+    drawTriangle(c, +unitR, 0, 0, -unitR/2, figureColor);
+    drawRect(c, -unitR, 0, 0, -unitR/2, figureColor);
+    drawCircle(c, 0, 0, unitR/2, 4, figureColor);
 
     // Координатная плоскость поверх всего, чтобы были видны оси и деления
     c.font = "14px monospaced";
@@ -51,7 +51,6 @@ let drawPlate = function () {
 // Рисует все старые точки, данные берет из таблицы
 let drawOldPoints = function() {
     let table = document.querySelector("section#results table");
-    console.log(table.rows[0].cells);
     let Xi, Yi, Ri;
     for (let cell of table.rows[0].cells) {
         if (cell.textContent === "X") Xi = cell.cellIndex;
@@ -78,14 +77,11 @@ canvas.onclick = function (event) {
     let R = document.getElementById("input-R");
     let scale = Number(R.dataset["scale"]);
     let x = getXinCanvas(event, canvas) - canvas.width / 2;
-    console.log("canvas.onclick x-pixel", x);
     let y = getYinCanvas(event, canvas) - canvas.height / 2;
-    console.log("canvas.onclick y-pixel", y);
     drawPoint(c, x, y);
 
     x = x / scale * R.value;
     y = y / scale * R.value;
-    console.log("canvas.onclick", x, y);
     let request = encodeFormData({
         "input-X": x,
         "input-Y": -y,
@@ -97,7 +93,6 @@ canvas.onclick = function (event) {
 function drawPoint(c, x, y) {
     c.save();
     c.fillStyle = "red";
-    console.log(x + " " + -y);
     c.moveTo(x, y);
     c.arc(x, y, 1.5, 0, 2 * Math.PI);
     c.fill();
@@ -272,8 +267,8 @@ function drawCircle(c, x, y, r, qr, color) {
     c.beginPath();
     c.moveTo(x, y);
     c.fillStyle = color || "#000";
-    let startAngle = (Math.PI / 2) * (qr - 1);
-    let endAngle = startAngle - Math.PI / 2;
+    let startAngle = -Math.PI/2 * (qr - 1);
+    let endAngle = startAngle - Math.PI/2;
     c.arc(x, y, r, startAngle, endAngle, true);
     c.fill();
 
